@@ -21,6 +21,12 @@ function App() {
 
     setFilter(e.target.value);
   };
+  //new array filteredCountries that returns all countries that match the filter
+  //this piece is crucial, by creating a new array  that can be manipulated and updated
+  //with filtered countries, it can be used to update the state
+  const filteredCountries = countries.filter((c) => {
+    return c.name.common.toLowerCase().includes(filter.toLowerCase());
+  });
 
   return (
     <div className="App">
@@ -36,7 +42,7 @@ function App() {
           </div>
         ))
       )} */}
-      <Display countries={countries} filter={filter} />
+      <Display countries={filteredCountries} filter={filter} />
     </div>
   );
 }

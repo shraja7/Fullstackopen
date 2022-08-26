@@ -1,10 +1,13 @@
 import React from "react";
+import SingleCountry from "./SingleCountry";
 
 const Display = ({ countries, filter }) => {
   return (
     <div>
-      {filter === "" ? (
-        <p>Too many matches, specify another filter</p>
+      {countries.length === 1 ? (
+        <SingleCountry countries={countries} />
+      ) : countries.length > 10 ? (
+        <p>Too many</p>
       ) : (
         countries
           .filter((country) => {
