@@ -21,10 +21,11 @@ function App() {
 
     setFilter(e.target.value);
   };
+
   //new array filteredCountries that returns all countries that match the filter
   //this piece is crucial, by creating a new array  that can be manipulated and updated
   //with filtered countries, it can be used to update the state
-  const filteredCountries = countries.filter((c) => {
+  const countriesToDisplay = countries.filter((c) => {
     return c.name.common.toLowerCase().includes(filter.toLowerCase());
   });
 
@@ -33,16 +34,11 @@ function App() {
       <h1>Countries</h1>
       <Search handleFilter={handleFilter} />
 
-      {/* {countries.length > 10 ? (
-        <p>Too many matches, specify another fitler</p>
-      ) : (
-        countries.map((country) => (
-          <div key={country.id}>
-            <p>{country.name.common}</p>
-          </div>
-        ))
-      )} */}
-      <Display countries={filteredCountries} filter={filter} />
+      <Display
+        countries={countriesToDisplay}
+        filter={filter}
+        setFilter={setFilter}
+      />
     </div>
   );
 }
