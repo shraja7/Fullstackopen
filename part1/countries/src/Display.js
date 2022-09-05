@@ -1,11 +1,18 @@
 import React from "react";
+
 import SingleCountry from "./SingleCountry";
 
-const Display = ({ countries, filter, setFilter }) => {
+const Display = ({ countries, filter, setFilter, weather, setWeather }) => {
+  //
+
   return (
     <div>
       {countries.length === 1 ? (
-        <SingleCountry countries={countries} />
+        <SingleCountry
+          countries={countries}
+          weather={weather}
+          setWeather={setWeather}
+        />
       ) : countries.length > 10 ? (
         <p>Too many</p>
       ) : (
