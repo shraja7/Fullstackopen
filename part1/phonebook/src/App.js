@@ -12,9 +12,9 @@ const App = () => {
     // { name: "Dan Abramov", number: "12-43-234345", id: 3 },
     // { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
   ]);
-  const [phone, setPhone] = useState("121456");
+  const [phone, setPhone] = useState("");
   const [newName, setNewName] = useState(" ");
-  const [filter, setFilter] = useState(" ");
+  const [filter, setFilter] = useState("");
   //const [filter, setFilter] = useState(true);
 
   useEffect(() => {
@@ -33,6 +33,9 @@ const App = () => {
 
     if (persons.find((person) => person.name === newName)) {
       alert(`${newName} is already added to phonebook`);
+      //change the existing persons phone number
+      peopleService.update();
+
       return;
     }
 
@@ -50,12 +53,18 @@ const App = () => {
     //new way with extrached module
     peopleService.create(personObject).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson));
-      setNewName("");
-      setPhone("");
     });
-    // setPersons(persons.concat(personObject));
-    // setNewName(" ");
-    // setPhone(" ");
+    setNewName(" ");
+    setPhone(" ");
+  };
+
+  //delete person from phonebook
+  const deletePerson = (person) => {
+    console.log("when button clicked PERSON", person);
+
+    peopleService.remove(person.id).then(() => {
+      setPersons(persons.filter((item) => item.id !== person.id));
+    });
   };
 
   const handleNameChange = (e) => {
@@ -81,11 +90,13 @@ const App = () => {
         handleSubmit={handleSubmit}
         handleNameChange={handleNameChange}
         handlePhoneChange={handlePhoneChange}
+        name={newName}
+        phone={phone}
       />
 
       <h2>Numbers</h2>
 
-      <Display persons={persons} filter={filter} />
+      <Display persons={persons} filter={filter} deletePerson={deletePerson} />
     </div>
   );
 };

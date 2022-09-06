@@ -1,6 +1,6 @@
 import React from "react";
 
-const Filter = ({ persons, filter }) => {
+const Filter = ({ persons, filter, deletePerson }) => {
   return (
     <div>
       {persons
@@ -13,7 +13,8 @@ const Filter = ({ persons, filter }) => {
         })
         .map((person) => (
           <li key={person.name}>
-            {person.name} {person.number} <button>delete</button>
+            {person.name} {person.number}{" "}
+            <button onClick={() => deletePerson(person)}>delete</button>
           </li>
         ))}
     </div>
