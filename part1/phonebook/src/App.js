@@ -41,14 +41,21 @@ const App = () => {
       number: phone,
     };
     //add new person to backend
-    axios
-      .post("http://localhost:3001/persons", personObject)
-      .then((response) => {
-        console.log("response");
-      });
-    setPersons(persons.concat(personObject));
-    setNewName(" ");
-    setPhone(" ");
+    // axios
+    //   .post("http://localhost:3001/persons", personObject)
+    //   .then((response) => {
+    //     console.log("response");
+    //   });
+
+    //new way with extrached module
+    peopleService.create(personObject).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson));
+      setNewName("");
+      setPhone("");
+    });
+    // setPersons(persons.concat(personObject));
+    // setNewName(" ");
+    // setPhone(" ");
   };
 
   const handleNameChange = (e) => {
