@@ -6,12 +6,7 @@ import axios from "axios";
 import peopleService from "./services/people";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    // { name: "Arto Hellas", number: "040-123456", id: 1 },
-    // { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    // { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    // { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [phone, setPhone] = useState("");
   const [newName, setNewName] = useState(" ");
   const [filter, setFilter] = useState("");
@@ -32,23 +27,54 @@ const App = () => {
     e.preventDefault();
 
     if (persons.find((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
-      //change the existing persons phone number
-      peopleService.update();
+      //if matching person
+      //save person in a variable
+      const singlePerson = persons.filter((person) => person.name === newName);
+      //person to update
+      const personToUpdate = singlePerson[0];
+      console.log("person is", personToUpdate);
+      //updated person object
+      const updatedPerson = { ...personToUpdate, number: phone };
+      console.log("updatedPerson", updatedPerson);
+
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace with new number? `
+        )
+      ) {
+        //logic to update the number of the person wiht new number
+        peopleService
+          .update(updatedPerson.id, updatedPerson)
+          .then((returnedPerson) => {
+            console.log(`${returnedPerson.name} successfully updated`);
+            const oldPersons = [...persons];
+            console.log("returned person", returnedPerson);
+
+            setPersons(
+              oldPersons.map((person) =>
+                person.id !== singlePerson.id ? person : returnedPerson
+              )
+            );
+
+            setNewName("");
+            setPhone("");
+          });
+        alert("number updated");
+      }
 
       return;
     }
-
+    //if a person doens't exist add them to the phonebook
+    //if a person is already in phonebook, confirm that they want name changed
+    //if confirm comes back true
+    //change the existing persons phone number
+    //else if confirm comes back false
+    //then just return  and do nothing
+    //
     const personObject = {
       name: newName,
       number: phone,
     };
-    //add new person to backend
-    // axios
-    //   .post("http://localhost:3001/persons", personObject)
-    //   .then((response) => {
-    //     console.log("response");
-    //   });
 
     //new way with extrached module
     peopleService.create(personObject).then((returnedPerson) => {
