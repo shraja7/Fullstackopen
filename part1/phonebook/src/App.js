@@ -30,6 +30,7 @@ const App = () => {
       //if matching person
       //save person in a variable
       const singlePerson = persons.filter((person) => person.name === newName);
+      console.log("singlePerson", singlePerson);
       //person to update
       const personToUpdate = singlePerson[0];
       console.log("person is", personToUpdate);
@@ -52,7 +53,7 @@ const App = () => {
 
             setPersons(
               oldPersons.map((person) =>
-                person.id !== singlePerson.id ? person : returnedPerson
+                person.id !== updatedPerson.id ? person : returnedPerson
               )
             );
 
