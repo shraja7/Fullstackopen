@@ -23,6 +23,7 @@ const App = () => {
     peopleService.getAll().then((initialPersons) => {
       setPersons(initialPersons);
     });
+
     console.log("persons", persons);
   }, []);
   const handleSubmit = (e) => {
@@ -65,6 +66,20 @@ const App = () => {
 
             setNewName("");
             setPhone("");
+          })
+          .catch((error) => {
+            console.log(error);
+            //determine if the given id is missing
+            setPersons(
+              persons.filter((person) => person.id !== updatedPerson.id)
+            );
+            console.log("persons array after the catch eerror", persons);
+            setMessage(
+              `Information is already removed for ${updatedPerson.name}`
+            );
+            setTimeout(() => {
+              setMessage(null);
+            }, 5000);
           });
         alert("number updated");
       }
