@@ -58,6 +58,10 @@ const App = () => {
                 person.id !== updatedPerson.id ? person : returnedPerson
               )
             );
+            setMessage(`Number updated successfully for ${updatedPerson.name}`);
+            setTimeout(() => {
+              setMessage(null);
+            }, 3000);
 
             setNewName("");
             setPhone("");
