@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Display from "./Display";
 import Search from "./Search";
 import PersonForm from "./PersonForm";
+import Notification from "./Notification";
 import axios from "axios";
 import peopleService from "./services/people";
 
@@ -10,6 +11,7 @@ const App = () => {
   const [phone, setPhone] = useState("");
   const [newName, setNewName] = useState(" ");
   const [filter, setFilter] = useState("");
+  const [message, setMessage] = useState(null);
   //const [filter, setFilter] = useState(true);
 
   useEffect(() => {
@@ -80,6 +82,10 @@ const App = () => {
     //new way with extrached module
     peopleService.create(personObject).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson));
+      setMessage(`Added ${personObject.name}`);
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
     });
     setNewName(" ");
     setPhone(" ");
@@ -109,6 +115,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
 
       <Search handleFilter={handleFilter} />
       <h1>Add New</h1>
