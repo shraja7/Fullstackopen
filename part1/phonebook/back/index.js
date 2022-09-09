@@ -1,11 +1,7 @@
 const express = require("express");
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("<h1>Hello World!</h1>");
-});
-
-const people = [
+const persons = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -30,10 +26,29 @@ const people = [
 
 app.use(express.json());
 
-app.get("/api/people", (req, res) => {
-  res.json(people);
+app.get("/api/persons", (req, res) => {
+  res.json(persons);
 });
 
+app.get("/info", (req, res) => {
+  res.send(
+    `Phone book has infor for ${persons.length} people 
+    
+    <div>${new Date()}</div> `
+  );
+});
+
+//funcitonality for displaying information for a single phone entry
+app.get("/api/people/:id", (request, response) => {
+  const id = Number(request.params.id);
+  const person = persons.find((p) => p.id === id);
+
+  if (person) {
+    response.json(person);
+  } else {
+    response.status(404).end();
+  }
+});
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running at ${PORT}`);
