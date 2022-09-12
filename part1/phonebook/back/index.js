@@ -1,7 +1,8 @@
+const { response } = require("express");
 const express = require("express");
 const app = express();
 
-const persons = [
+let persons = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -26,6 +27,11 @@ const persons = [
     id: 5,
     name: "Joe Blow",
     number: '8989898'
+  },
+  {
+    id: 6,
+    name: "Li Blow",
+    number: '1561561'
   }
 ];
 
@@ -54,6 +60,21 @@ app.get("/api/persons/:id", (request, response) => {
     response.status(404).end();
   }
 });
+//funcitonality for deleting a specific person based on ID
+app.delete("/api/persons/:id", (request, response)=>{
+  const idNum = Number(request.params.id)
+ 
+  //filter: set new array that contains ids THAT DONT MATCH the persons ID, so a copy without the matching ID
+  //persons before filter
+  console.log(persons)
+  console.log('success deleting')
+   persons = persons.filter(person => person.id !== idNum)
+//persons after filter
+// console.log(persons)
+  response.status(204).end()
+
+})
+
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running at ${PORT}`);
