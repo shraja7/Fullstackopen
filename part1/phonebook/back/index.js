@@ -74,6 +74,46 @@ app.delete("/api/persons/:id", (request, response)=>{
   response.status(204).end()
 
 })
+//add funcitonality so that new phonebook entries can be added by making post requests
+app.post('/api/persons',(request, response)=>{
+  // Implement error handling for creating new entries. The request is not allowed to succeed, if:
+
+  //   The name or number is missing --DONE
+  //   The name already exists in the phonebook --DONE
+
+  const body = request.body
+
+
+  const alreadyExists = persons.find(person => person.name === body.name)
+  console.log(alreadyExists);
+  if(alreadyExists){
+    return response.status(400).json({
+      error: 'person already exists in the phonebook'
+    })
+  }
+
+  if(!body.name || !body.number){
+    return response.status(400).json({
+      error: 'name or number missing'
+    })
+  }
+
+
+  let idGenerator = Math.floor(Math.random()* 100)
+
+  const person ={
+    id: idGenerator,
+    name: body.name,
+    number: body.number
+    
+  }
+
+  persons = persons.concat(person)
+
+
+  response.json(person)
+
+})
 
 const PORT = 3001;
 app.listen(PORT, () => {
