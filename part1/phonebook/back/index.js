@@ -22,6 +22,11 @@ const persons = [
     name: "Mary Poppendieck",
     number: "39-23-6423122",
   },
+  {
+    id: 5,
+    name: "Joe Blow",
+    number: '8989898'
+  }
 ];
 
 app.use(express.json());
@@ -39,7 +44,7 @@ app.get("/info", (req, res) => {
 });
 
 //funcitonality for displaying information for a single phone entry
-app.get("/api/people/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response) => {
   const id = Number(request.params.id);
   const person = persons.find((p) => p.id === id);
 
