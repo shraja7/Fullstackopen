@@ -1,7 +1,13 @@
 const { response } = require("express");
 const express = require("express");
 const app = express();
+const morgan = require('morgan')
+morgan('tiny')
 
+//create custom morgan token
+morgan.token('body', req => {
+  return JSON.stringify(req.body)
+})
 let persons = [
   {
     id: 1,
@@ -36,6 +42,8 @@ let persons = [
 ];
 
 app.use(express.json());
+app.use(morgan(':method :url :body'))
+
 
 app.get("/api/persons", (req, res) => {
   res.json(persons);
@@ -112,6 +120,7 @@ app.post('/api/persons',(request, response)=>{
 
 
   response.json(person)
+  
 
 })
 
