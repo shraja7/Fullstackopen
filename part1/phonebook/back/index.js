@@ -1,7 +1,11 @@
 const { response } = require("express");
+
 const express = require("express");
 const app = express();
 const cors = require('cors')
+app.use(express.static('build'))
+require('dotenv').config()
+
 const morgan = require('morgan')
 morgan('tiny')
 
@@ -127,7 +131,7 @@ app.post('/api/persons',(request, response)=>{
 
 })
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running at ${PORT}`);
 });
