@@ -3,6 +3,8 @@ const { response } = require("express");
 const express = require("express");
 const app = express();
 const cors = require('cors')
+const mongoose = require('mongoose')
+const Person = require('./models/person')
 app.use(express.static('build'))
 require('dotenv').config()
 
@@ -10,50 +12,84 @@ const morgan = require('morgan')
 morgan('tiny')
 
 app.use(cors())
+app.use(express.json());
 
 //create custom morgan token
 morgan.token('body', req => {
   return JSON.stringify(req.body)
 })
-let persons = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-  {
-    id: 5,
-    name: "Joe Blow",
-    number: '8989898'
-  },
-  {
-    id: 6,
-    name: "Li Blow",
-    number: '1561561'
-  }
-];
+// let persons = [
+//   {
+//     id: 1,
+//     name: "Arto Hellas",
+//     number: "040-123456",
+//   },
+//   {
+//     id: 2,
+//     name: "Ada Lovelace",
+//     number: "39-44-5323523",
+//   },
+//   {
+//     id: 3,
+//     name: "Dan Abramov",
+//     number: "12-43-234345",
+//   },
+//   {
+//     id: 4,
+//     name: "Mary Poppendieck",
+//     number: "39-23-6423122",
+//   },
+//   {
+//     id: 5,
+//     name: "Joe Blow",
+//     number: '8989898'
+//   },
+//   {
+//     id: 6,
+//     name: "Li Blow",
+//     number: '1561561'
+//   }
+// ];
 
-app.use(express.json());
+// const url = `mongodb+srv://shraja7:${process.env.MONGO_PASSWORD}@cluster0.1fwynkb.mongodb.net/?retryWrites=true&w=majority`
+// mongoose.connect(url)
+
+// const personSchema = new mongoose.Schema({
+//   name: String,
+//   phone: Number,
+  
+// })
+// //modify schema to return a certain way
+// //Even though the _id property of Mongoose objects looks like a string, it is in fact an object.
+// personSchema.set('toJSON', {
+//   transform: (document, returnedObject) => {
+//     returnedObject.id = returnedObject._id.toString()
+//     delete returnedObject._id
+//     delete returnedObject.__v
+//   }
+// })
+
+
+// const Person = mongoose.model('Person', personSchema)
+
+
+// const person = new Person({
+//   name: name,
+// phone: phone
+
+// })
+
+
+
+
+
 app.use(morgan(':method :url :body'))
 
 
 app.get("/api/persons", (req, res) => {
-  res.json(persons);
+ Person.find({}).then(p => {
+  res.json(p)
+ })
 });
 
 app.get("/info", (req, res) => {
