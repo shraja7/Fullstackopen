@@ -13,7 +13,7 @@ mongoose.connect(url)
 
 const personSchema = new mongoose.Schema({
         name: String,
-        phone: Number,
+        number: String,
         
       })
       //modify schema to return a certain way
@@ -25,5 +25,6 @@ const personSchema = new mongoose.Schema({
           delete returnedObject.__v
         }
       })
+
 
 module.exports = mongoose.model('Person', personSchema)

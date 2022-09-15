@@ -1,84 +1,30 @@
-const { response } = require("express");
 
-const express = require("express");
-const app = express();
-const cors = require('cors')
-const mongoose = require('mongoose')
-const Person = require('./models/person')
-app.use(express.static('build'))
 require('dotenv').config()
+const express = require("express");
+const morgan = require('morgan');
+const cors = require('cors')
+const app = express();
+const Person = require('./models/person')
 
-const morgan = require('morgan')
+
+app.use(express.static("build"))
+app.use(express.json())
+app.use(cors())
+
+
+
+
+
+
+
+// const person = require("./models/person");
 morgan('tiny')
 
-app.use(cors())
-app.use(express.json());
 
 //create custom morgan token
 morgan.token('body', req => {
   return JSON.stringify(req.body)
 })
-// let persons = [
-//   {
-//     id: 1,
-//     name: "Arto Hellas",
-//     number: "040-123456",
-//   },
-//   {
-//     id: 2,
-//     name: "Ada Lovelace",
-//     number: "39-44-5323523",
-//   },
-//   {
-//     id: 3,
-//     name: "Dan Abramov",
-//     number: "12-43-234345",
-//   },
-//   {
-//     id: 4,
-//     name: "Mary Poppendieck",
-//     number: "39-23-6423122",
-//   },
-//   {
-//     id: 5,
-//     name: "Joe Blow",
-//     number: '8989898'
-//   },
-//   {
-//     id: 6,
-//     name: "Li Blow",
-//     number: '1561561'
-//   }
-// ];
-
-// const url = `mongodb+srv://shraja7:${process.env.MONGO_PASSWORD}@cluster0.1fwynkb.mongodb.net/?retryWrites=true&w=majority`
-// mongoose.connect(url)
-
-// const personSchema = new mongoose.Schema({
-//   name: String,
-//   phone: Number,
-  
-// })
-// //modify schema to return a certain way
-// //Even though the _id property of Mongoose objects looks like a string, it is in fact an object.
-// personSchema.set('toJSON', {
-//   transform: (document, returnedObject) => {
-//     returnedObject.id = returnedObject._id.toString()
-//     delete returnedObject._id
-//     delete returnedObject.__v
-//   }
-// })
-
-
-// const Person = mongoose.model('Person', personSchema)
-
-
-// const person = new Person({
-//   name: name,
-// phone: phone
-
-// })
-
 
 
 
@@ -92,37 +38,41 @@ app.get("/api/persons", (req, res) => {
  })
 });
 
-app.get("/info", (req, res) => {
-  res.send(
-    `Phone book has infor for ${persons.length} people 
+// app.get("/info", (req, res) => {
+//   res.send(
+//     `Phone book has infor for ${persons.length} people 
     
-    <div>${new Date()}</div> `
-  );
-});
+//     <div>${new Date()}</div> `
+//   );
+// });
 
-//funcitonality for displaying information for a single phone entry
+//funcitonality for displaying information for a single person entry
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find((p) => p.id === id);
-
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).end();
+  // const id = Number(request.params.id);
+  // const person = persons.find((p) => p.id === id);
+Person.findById(request.params.id).then(p =>{
+  response.json(p)
+}).then(p => {
+  if(p){
+    response.json(p)
+  }else{
+    response.status(404).end()
   }
+}).catch(error => next(error))
+  // if (person) {
+  //   response.json(person);
+  // } else {
+  //   response.status(404).end();
+  // }
 });
 //funcitonality for deleting a specific person based on ID
-app.delete("/api/persons/:id", (request, response)=>{
-  const idNum = Number(request.params.id)
- 
-  //filter: set new array that contains ids THAT DONT MATCH the persons ID, so a copy without the matching ID
-  //persons before filter
-  console.log(persons)
-  console.log('success deleting')
-   persons = persons.filter(person => person.id !== idNum)
-//persons after filter
-// console.log(persons)
-  response.status(204).end()
+app.delete("/api/persons/:id", (request, response,next)=>{
+
+
+  Person.findByIdAndRemove(request.params.id)
+  .then(() =>{
+    response.status(204).end()
+  }).catch(error => next(error))
 
 })
 //add funcitonality so that new phonebook entries can be added by making post requests
@@ -134,14 +84,14 @@ app.post('/api/persons',(request, response)=>{
 
   const body = request.body
 
-
-  const alreadyExists = persons.find(person => person.name === body.name)
-  console.log(alreadyExists);
-  if(alreadyExists){
-    return response.status(400).json({
-      error: 'person already exists in the phonebook'
-    })
-  }
+//check if person already exists
+  // const alreadyExists = persons.find(person => person.name === body.name)
+  // console.log(alreadyExists);
+  // if(alreadyExists){
+  //   return response.status(400).json({
+  //     error: 'person already exists in the phonebook'
+  //   })
+  // }
 
   if(!body.name || !body.number){
     return response.status(400).json({
@@ -150,22 +100,57 @@ app.post('/api/persons',(request, response)=>{
   }
 
 
-  let idGenerator = Math.floor(Math.random()* 100)
-
-  const person ={
-    id: idGenerator,
-    name: body.name,
-    number: body.number
-    
-  }
-
-  persons = persons.concat(person)
 
 
-  response.json(person)
-  
+const person = new Person({
+  name: body.name,
+  number: body.number
+})
+  // persons = persons.concat(person)
+
+
+  // response.json(person)
+  person.save().then(savedPerson =>{
+    response.json(savedPerson)
+  })
 
 })
+//If the user tries to create a new phonebook 
+//entry for a person whose name is already in the phonebook, the frontend 
+//will try to update the phone number of the existing entry by 
+//making an HTTP PUT request to the entry's unique URL.
+app.put('api/persons/:id', (request, response, next)=>{
+  
+const body = request.body
+const person = {
+  name: body.name,
+  number: body.number,
+}
+
+  Person.findByIdAndUpdate(request.params.id, person, {new: true})
+  .then(updatedPerson =>{
+    response.json(updatedPerson)
+  }).catch(error => next(error))
+})
+
+//error handler
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'Unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'Invalid id format' })
+  }
+  if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
+  next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
