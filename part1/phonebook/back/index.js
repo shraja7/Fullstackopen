@@ -38,14 +38,13 @@ app.get("/api/persons", (req, res) => {
  })
 });
 
-// app.get("/info", (req, res) => {
-//   res.send(
-//     `Phone book has infor for ${persons.length} people 
-    
-//     <div>${new Date()}</div> `
-//   );
-// });
-
+app.get("/api/persons/info", (req, res) => {
+  
+  Person.find({}).then(p => {
+   res.send(`Phonebook has ${p.length} entries
+   <p> ${Date()}</p>`)
+  })
+ });
 //funcitonality for displaying information for a single person entry
 app.get("/api/persons/:id", (request, response) => {
   // const id = Number(request.params.id);
@@ -65,6 +64,8 @@ Person.findById(request.params.id).then(p =>{
   //   response.status(404).end();
   // }
 });
+//info route to display information of the backend
+
 //funcitonality for deleting a specific person based on ID
 app.delete("/api/persons/:id", (request, response,next)=>{
 
