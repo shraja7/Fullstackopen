@@ -119,13 +119,15 @@ const person = new Person({
 //entry for a person whose name is already in the phonebook, the frontend 
 //will try to update the phone number of the existing entry by 
 //making an HTTP PUT request to the entry's unique URL.
-app.put('api/persons/:id', (request, response, next)=>{
+app.put('/api/persons/:id', (request, response, next)=>{
   
 const body = request.body
 const person = {
   name: body.name,
   number: body.number,
 }
+
+
 
   Person.findByIdAndUpdate(request.params.id, person, {new: true})
   .then(updatedPerson =>{
