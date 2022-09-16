@@ -13,8 +13,8 @@ mongoose.connect(url )
      })
 
      const personSchema = new mongoose.Schema({
-      name: { type: String, required: true,  minlength: [3, 'Name must have atleast 3 characters'] },
-      number: { type: String, required: true,  minlength: [8, 'Number must have atleast 8 characters'] },
+      name: { type: String, required: true,  minLength: [3, 'Name must have atleast 3 characters'] },
+      number: { type: String, required: true,  minLength: [8, 'Number must have atleast 8 characters'] },
     })
       //modify schema to return a certain way
       //Even though the _id property of Mongoose objects looks like a string, it is in fact an object.
