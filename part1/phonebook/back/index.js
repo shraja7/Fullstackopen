@@ -1,14 +1,16 @@
 
 require('dotenv').config()
 const express = require("express");
+// const bodyParser = require('body-parser')
 const morgan = require('morgan');
 const cors = require('cors')
 const app = express();
 const Person = require('./models/person')
 
-
-app.use(express.static("build"))
 app.use(express.json())
+app.use(express.static("build"))
+
+// app.use(bodyParser.json())
 app.use(cors())
 
 
@@ -77,7 +79,7 @@ app.delete("/api/persons/:id", (request, response,next)=>{
 
 })
 //add funcitonality so that new phonebook entries can be added by making post requests
-app.post('/api/persons',(request, response)=>{
+app.post('/api/persons',(request, response, next)=>{
   // Implement error handling for creating new entries. The request is not allowed to succeed, if:
 
   //   The name or number is missing --DONE
@@ -100,9 +102,6 @@ app.post('/api/persons',(request, response)=>{
     })
   }
 
-
-
-
 const person = new Person({
   name: body.name,
   number: body.number
@@ -111,9 +110,12 @@ const person = new Person({
 
 
   // response.json(person)
-  person.save().then(savedPerson =>{
-    response.json(savedPerson)
+  person
+  .save()
+  .then(savedPerson =>{
+    response.json(savedPerson.toJSON())
   })
+   .catch(error => next(error))
 
 })
 //If the user tries to create a new phonebook 
@@ -130,10 +132,11 @@ const person = {
 
 
 
-  Person.findByIdAndUpdate(request.params.id, person, {new: true})
+  Person.findByIdAndUpdate(request.params.id, person, {new: true, runValidators: true, context: 'query'})
   .then(updatedPerson =>{
     response.json(updatedPerson)
-  }).catch(error => next(error))
+  })
+   .catch(error => next(error))
 })
 
 //error handler
