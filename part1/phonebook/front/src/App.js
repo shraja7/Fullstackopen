@@ -46,6 +46,9 @@ const App = () => {
           `${newName} is already added to phonebook, replace with new number? `
         )
       ) {
+
+        
+
         //logic to update the number of the person wiht new number
         peopleService
           .update(updatedPerson.id, updatedPerson)
@@ -100,14 +103,27 @@ const App = () => {
 
     //new way with extrached module
     peopleService.create(personObject).then((returnedPerson) => {
+
       setPersons(persons.concat(returnedPerson));
       setMessage(`Added ${personObject.name}`);
+
       setTimeout(() => {
         setMessage(null);
       }, 3000);
-    });
-    setNewName(" ");
-    setPhone(" ");
+
+      setNewName(" ");
+      setPhone(" ");
+
+    }).catch(error =>{
+     //setMessage(error.response.data.error)
+       console.log('error from app.js', error)
+      
+      
+    })
+    
+
+    
+    
   };
 
   //delete person from phonebook
