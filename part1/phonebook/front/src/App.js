@@ -29,97 +29,69 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (persons.find((person) => person.name === newName)) {
-      //if matching person
-      //save person in a variable
-      const singlePerson = persons.filter((person) => person.name === newName);
-      console.log("singlePerson", singlePerson);
-      //person to update
-      const personToUpdate = singlePerson[0];
-      console.log("person is", personToUpdate);
-      //updated person object
-      const updatedPerson = { ...personToUpdate, number: phone };
-      console.log("updatedPerson", updatedPerson);
-
-      if (
-        window.confirm(
-          `${newName} is already added to phonebook, replace with new number? `
-        )
-      ) {
-
-        
-
-        //logic to update the number of the person wiht new number
-        peopleService
-          .update(updatedPerson.id, updatedPerson)
-          .then((returnedPerson) => {
-            console.log(`${returnedPerson.name} successfully updated`);
-            const oldPersons = [...persons];
-            console.log("returned person", returnedPerson);
-
-            setPersons(
-              oldPersons.map((person) =>
-                person.id !== updatedPerson.id ? person : returnedPerson
-              )
-            );
-            setMessage(`Number updated successfully for ${updatedPerson.name}`);
-            setTimeout(() => {
-              setMessage(null);
-            }, 3000);
-
-            setNewName("");
-            setPhone("");
-          })
-          .catch((error) => {
-            console.log(error);
-            //determine if the given id is missing
-            setPersons(
-              persons.filter((person) => person.id !== updatedPerson.id)
-            );
-            console.log("persons array after the catch eerror", persons);
-            setMessage(
-              `Information is already removed for ${updatedPerson.name}`
-            );
-            setTimeout(() => {
-              setMessage(null);
-            }, 5000);
-          });
-        alert("number updated");
-      }
-
-      return;
-    }
-    //if a person doens't exist add them to the phonebook
-    //if a person is already in phonebook, confirm that they want name changed
-    //if confirm comes back true
-    //change the existing persons phone number
-    //else if confirm comes back false
-    //then just return  and do nothing
-    //
+    const personsArray = persons.map(e => e.name)
     const personObject = {
       name: newName,
-      number: phone,
-    };
-
-    //new way with extrached module
-    peopleService.create(personObject).then((returnedPerson) => {
-
-      setPersons(persons.concat(returnedPerson));
-      setMessage(`Added ${personObject.name}`);
-
-      setTimeout(() => {
-        setMessage(null);
-      }, 3000);
-
-      setNewName(" ");
-      setPhone(" ");
-
-    }).catch(error =>{
-     //setMessage(error.response.data.error)
-       console.log('error from app.js', error)
-      
-      
-    })
+      number: newNumber
+    }
+    if (personsArray.includes(`${personObject.name}`)) {
+      const oldPerson = persons.filter(e => e.name === newName)
+      const _id = oldPerson.map(e => e.id)[0]
+      const result = window.confirm(
+        `${newName} is already added to phonebook, replace the old number with a new one?`
+      )
+      if (result) {
+        peopleService
+          .update(_id, personObject)
+          .then(returnedPerson => {
+            setPersons(persons.map(person =>
+              person.id === returnedPerson.id ? returnedPerson : person))
+            setMessage(
+              // text: `Edited ${returnedPerson.name}`,
+              // type: "success",
+              `Number updated successfully for ${returnedPerson.name}`
+            )
+            setTimeout(() => {
+              setMessage(null)
+            }, 3000)
+          })
+          .catch(error => {
+            // setMessage({
+            //   text: error.response.data.error,
+            //   type: "error"
+            // }
+            // )
+            console.log(`${error.response.data.error}`)
+            setTimeout(() => {
+              setMessage(null)
+            }, 3000)
+          })
+        setNewName('')
+        setNewNumber('')
+      }
+    } else {
+      peopleService
+        .create(personObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setMessage(`Number updated successfully for ${returnedPerson.name}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 3000)
+        })
+        .catch(error => {
+          // setMessage({
+          //   text: error.response.data.error,
+          //   type: "error"
+          // }) 
+          console.log(`${error.response.data.error}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 3000)
+        })
+      setNewName('')
+      setNewNumber('')
+    }
     
 
     
