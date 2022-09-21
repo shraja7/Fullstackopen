@@ -32,7 +32,7 @@ const App = () => {
     const personsArray = persons.map(e => e.name)
     const personObject = {
       name: newName,
-      number: newNumber
+      number: phone
     }
     if (personsArray.includes(`${personObject.name}`)) {
       const oldPerson = persons.filter(e => e.name === newName)
@@ -67,30 +67,27 @@ const App = () => {
             }, 3000)
           })
         setNewName('')
-        setNewNumber('')
+        setPhone('')
       }
     } else {
       peopleService
         .create(personObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
-          setMessage(`Number updated successfully for ${returnedPerson.name}`)
+          setMessage(` ${returnedPerson.name} Added successfully`)
           setTimeout(() => {
             setMessage(null)
           }, 3000)
         })
         .catch(error => {
-          // setMessage({
-          //   text: error.response.data.error,
-          //   type: "error"
-          // }) 
-          console.log(`${error.response.data.error}`)
+           setMessage(`${error.response.data.error}`) 
+          console.log(error.response.data.error)
           setTimeout(() => {
             setMessage(null)
           }, 3000)
         })
       setNewName('')
-      setNewNumber('')
+      setPhone('')
     }
     
 
