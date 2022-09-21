@@ -48,23 +48,22 @@ app.get("/api/persons/info", (req, res) => {
   })
  });
 //funcitonality for displaying information for a single person entry
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response,next) => {
   // const id = Number(request.params.id);
   // const person = persons.find((p) => p.id === id);
 Person.findById(request.params.id).then(p =>{
   response.json(p)
-}).then(p => {
+
+}).then( p => {
   if(p){
     response.json(p)
   }else{
     response.status(404).end()
   }
-}).catch(error => next(error))
-  // if (person) {
-  //   response.json(person);
-  // } else {
-  //   response.status(404).end();
-  // }
+ 
+}
+).catch(error => next(error))
+
 });
 //info route to display information of the backend
 

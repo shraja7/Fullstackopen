@@ -14,7 +14,18 @@ mongoose.connect(url )
 
      const personSchema = new mongoose.Schema({
       name: { type: String, required: true,  minLength: [3, 'Name must have atleast 3 characters'] },
-      number: { type: String, required: true,  minLength: [8, 'Number must have atleast 8 characters'] },
+      // number: { type: String, required: true,  minLength: [8, 'Number must have atleast 8 characters'] },
+      number: {
+        type: String, 
+        validate: {
+          validator: function(v){
+            return /\d{3}-\d{3}-\d{4}/.test(v);
+          },
+          message: props => `${props.value} is not a valid phone number!`
+        },
+        required: [true, 'User phone number required']
+      
+      }
     })
       //modify schema to return a certain way
       //Even though the _id property of Mongoose objects looks like a string, it is in fact an object.
