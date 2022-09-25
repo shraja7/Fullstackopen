@@ -7,3 +7,6 @@ module.exports = {
   MONGODB_URI,
   PORT
 }
+
+//The handling of environment variables
+// is extracted into a separate utils/config.js file:
