@@ -5,6 +5,7 @@ const app = require('../app')
 
 const api = supertest(app)
 const Blog = require('../models/blog')
+const { deleteOne } = require('../models/blog')
 
 
 // const initialBlogs = [
@@ -82,7 +83,11 @@ beforeEach(async () =>{
 
   // blogObject = Blog(helper.initialBlogs[6])
   // await blogObject.save()
-await Blog.insertMany(helper.initialBlogs)
+// await Blog.insertMany(helper.initialBlogs)
+for(let blog of helper.initialBlogs){
+  let blogObject = new Blog(blog)
+  await blogObject.save()
+}
   
 })
 
@@ -115,17 +120,13 @@ test('a specific blog is within the returned blogs', async () => {
 })
 
 
-test('a valid blog can be added ', async () => {
+test('a valid blog can be added', async () => {
   const newBlog = {
-
-    _id: "5a422a851b54a676234d17f7",
-    title: "'async/await simplifies making async calls'",
+   title: "async/await simplifies making async calls",
     author: "Test Author",
     url: "https://reactpatterns.com/",
-    likes: 7,
-    __v: 0,
+    likes: 69,
   
-    important: true,
   }
 
   await api
@@ -134,10 +135,10 @@ test('a valid blog can be added ', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  const blogsAtEnd = await helper.notesInDb()
+  const blogsAtEnd = await helper.blogsInDb()
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
 
-  const contents = blogsAtEnd.map(n => n.content)
+  const contents = blogsAtEnd.map(n => n.title)
   expect(contents).toContain(
     'async/await simplifies making async calls'
   )
@@ -173,5 +174,5 @@ test('blog without content is not added', async ()=>{
 
 
 afterAll(() => {
-  mongoose.connection.close()
+  mongoose.connection.close();
 })
