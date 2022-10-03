@@ -61,52 +61,35 @@ const Blog = require('../models/blog')
 beforeEach(async () =>{
   await Blog.deleteMany({})
 
-  let blogObject = new Blog(helper.initialBlogs[0])
-  await blogObject.save()
+  // let blogObject = new Blog(helper.initialBlogs[0])
+  // await blogObject.save()
 
-  blogObject = Blog(helper.initialBlogs[1])
-  await blogObject.save()
+  // blogObject = Blog(helper.initialBlogs[1])
+  // await blogObject.save()
 
-  blogObject = Blog(helper.initialBlogs[2])
-  await blogObject.save()
+  // blogObject = Blog(helper.initialBlogs[2])
+  // await blogObject.save()
 
-  blogObject = Blog(helper.initialBlogs[3])
-  await blogObject.save()
+  // blogObject = Blog(helper.initialBlogs[3])
+  // await blogObject.save()
 
-  blogObject = Blog(helper.initialBlogs[4])
-  await blogObject.save()
+  // blogObject = Blog(helper.initialBlogs[4])
+  // await blogObject.save()
 
-  blogObject = Blog(helper.initialBlogs[5])
-  await blogObject.save()
+  // blogObject = Blog(helper.initialBlogs[5])
+  // await blogObject.save()
 
 
-  blogObject = Blog(helper.initialBlogs[6])
-  await blogObject.save()
-
+  // blogObject = Blog(helper.initialBlogs[6])
+  // await blogObject.save()
+await Blog.insertMany(helper.initialBlogs)
   
 })
 
 
 
 
-//initialize db before every test with beforeEach function
-// beforeEach(async () => {
-//   await Blog.deleteMany({})
-//   let blogObject = new Blog(initialBlogs[0])
-//   await blogObject.save()
-//   blogObject = new Blog(initialBlogs[1])
-//   await blogObject.save()
-//   blogObject = new Blog(initialBlogs[2])
-//   await blogObject.save()
-//   blogObject = new Blog(initialBlogs[3])
-//   await blogObject.save()
-//   blogObject = new Blog(initialBlogs[4])
-//   await blogObject.save()
-//   blogObject = new Blog(initialBlogs[5])
-//   await blogObject.save()
-//   blogObject = new Blog(initialBlogs[6])
-//   await blogObject.save()
-// })
+
 
 test('blogs are returned as json', async () => {
   await api
