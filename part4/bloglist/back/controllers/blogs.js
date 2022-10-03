@@ -4,11 +4,7 @@ const Blog = require('../models/blog')
 
 //refactor using async/await
 blogsRouter.get('/', async (request, response) => {
-    // Blog
-    //   .find({})
-    //   .then(blogs => {
-    //     response.json(blogs)
-    //   })
+   
   const blogs = await Blog.find({})
   response.json(blogs)
   
@@ -18,15 +14,12 @@ blogsRouter.get('/', async (request, response) => {
 
 
   blogsRouter.post('/', async (request, response) => {
-    // const blog = new Blog(request.body)
-  
-    // blog
-    //   .save()
-    //   .then(result => {
-    //     response.status(201).json(result)
-    //   })
-
+ 
     const body = request.body
+
+    if(!body.likes){
+      body.likes =0
+    }
 
     const blog = new Blog({
   

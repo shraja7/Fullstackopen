@@ -157,10 +157,35 @@ test('verify that the unique identifier of the blogs is id', async()=>{
 //4.11*: Blog list tests, step4
 //Write a test that verifies that if the likes property is missing from the request, it will default to the 
 //value 0. Do not test the other properties of the created blogs yet.
-test('verify if the likes property is missing from the request', async()=>{
-  const blogs = await Blog.find({})
+test('If the likes property is missing, it will default to 0 ', async () => {
+  const newBlog = {
+    title:"Test",
+    author:"Test author",
+    url:"http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+  }
 
-  expect(blogs[0].likes).toBeFalsy()
+  await api
+    .post('/api/blogs/')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+
+
+  //verify that the correct number of blogs are returned after adding the new test blog
+  let response = await api.get('/api/blogs')
+  expect(response.body.length).toEqual(7)
+
+ console.log('blog at end', response.body[6])
+
+
+
+const blogsAtEnd = await helper.blogsInDb()
+console.log('all blogs from helper: ', blogsAtEnd)
+const addedBlog = await blogsAtEnd.find(blog => blog.title === "Test")
+console.log('newest added test blog', addedBlog)
+console.log(addedBlog.likes)
+expect(addedBlog.likes).toEqual(0)
 })
 
 
