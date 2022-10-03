@@ -145,6 +145,15 @@ test('a valid blog can be added', async () => {
 })
 
 
+// 4.9*: Blog list tests, step2, a test  that verifies that the unique identifier property of the 
+//blog posts is named id, by default the database names the property _id
+//tests the first blog to check that __id is defined as a unique identifier
+test('verify that the unique identifier of the blogs is id', async()=>{
+  const blogs = await Blog.find({})
+
+  expect(blogs[0]._id).toBeDefined()
+})
+
 
 
 
