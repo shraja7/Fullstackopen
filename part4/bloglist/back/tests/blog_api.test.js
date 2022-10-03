@@ -154,7 +154,14 @@ test('verify that the unique identifier of the blogs is id', async()=>{
   expect(blogs[0]._id).toBeDefined()
 })
 
+//4.11*: Blog list tests, step4
+//Write a test that verifies that if the likes property is missing from the request, it will default to the 
+//value 0. Do not test the other properties of the created blogs yet.
+test('verify if the likes property is missing from the request', async()=>{
+  const blogs = await Blog.find({})
 
+  expect(blogs[0].likes).toBeFalsy()
+})
 
 
 //test length of blogs
