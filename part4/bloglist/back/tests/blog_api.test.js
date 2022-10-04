@@ -188,6 +188,39 @@ console.log(addedBlog.likes)
 expect(addedBlog.likes).toEqual(0)
 })
 
+//test to verifies if title and url properties are missing, reutrn status code 400, bad request'
+test('verify title properties are missing', async()=>{
+  const newBlog = {
+    
+    author:"Test author",
+    url:"http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+    likes: 5
+  }
+
+  await api
+    .post('/api/blogs/')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+
+
+  //verify that the correct number of blogs are returned after adding the new test blog
+  let response = await api.get('/api/blogs')
+  expect(response.body.length).toEqual(7)
+
+//  console.log('blog at end', response.body[6])
+
+
+
+// const blogsAtEnd = await helper.blogsInDb()
+// console.log('all blogs from helper: ', blogsAtEnd)
+// const addedBlog = await blogsAtEnd.find(blog => blog.title === "Test")
+// console.log('newest added test blog', addedBlog)
+// console.log(addedBlog.likes)
+// expect(addedBlog.likes).toEqual(0)
+})
+
 
 //test length of blogs
 
@@ -214,6 +247,33 @@ test('blog without content is not added', async ()=>{
 })
 
 
+
+describe('deletion of a blog', ()=>{
+  test('succeeds with status code 204 if id is valid', async()=>{
+    const blogsAtStart = await helper.blogsInDb()
+    console.log('blogs at start',blogsAtStart);
+    const blogToDelete = blogsAtStart[0]
+    console.log('blog to delete', blogToDelete)
+
+   //delete blog
+   await api
+   .delete(`/api/blogs/${blogToDelete.id}`)
+   expect(204)
+
+   const blogsAfterDeletion = await helper.blogsInDb()
+
+   console.log('blogs after deleting first blog', blogsAfterDeletion)
+
+   expect(blogsAfterDeletion).toHaveLength(
+    helper.initialBlogs.length - 1
+   )
+
+   const title = blogsAfterDeletion.map(blog => blog.title)
+   console.log('titles of all blogs post deletion', title)
+
+   expect(title).not.toContain(blogToDelete.title)
+  })
+})
 afterAll(() => {
   mongoose.connection.close();
 })

@@ -10,6 +10,11 @@ blogsRouter.get('/', async (request, response) => {
   
   }
   )
+
+blogsRouter.delete('/:id', async(request, response, next)=>{
+  await Blog.findByIdAndRemove(request.params.id)
+  response.status(204).end()
+})
   
 
 
@@ -19,6 +24,16 @@ blogsRouter.get('/', async (request, response) => {
 
     if(!body.likes){
       body.likes =0
+    }
+    if(!body.title){
+      return response.status(400).json({
+        error: 'title missing'
+      })
+    }
+    if(!body.url){
+      return response.status(400).json({
+        error: 'url missing'
+      })
     }
 
     const blog = new Blog({
