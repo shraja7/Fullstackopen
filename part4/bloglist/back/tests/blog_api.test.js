@@ -274,6 +274,45 @@ describe('deletion of a blog', ()=>{
    expect(title).not.toContain(blogToDelete.title)
   })
 })
+
+
+//===========================
+// TODO -- implement test for updating a single blog
+describe('update a single blog',  () => { 
+  test('succeeds if blog is updated', async()=>{
+    const blogsAtStart = await helper.blogsInDb();
+    console.log('blogs at start', blogsAtStart)
+
+    const blogToUpdate = blogsAtStart[0]
+    console.log('blog to update', blogToUpdate)
+
+    const blog =
+    {
+      
+      liks: 1231321
+    }
+  console.log('blog value:', blog)
+    await api
+    .put(`api/blogs/${blogToUpdate.id}`)
+    .send(blog)
+  
+    //get blogs after updating likes
+    const blogsAfterUpdate = await helper.blogsInDb()
+
+
+  
+    console.log('blogs after updating likes for first blog',blogsAfterUpdate )
+  
+  })
+ 
+
+
+
+
+
+ })
+//=============================
+
 afterAll(() => {
   mongoose.connection.close();
 })
