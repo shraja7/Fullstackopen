@@ -64,6 +64,59 @@ describe('When there is initially one user in the db', ()=>{
          expect(usersAtEnd).toHaveLength(usersAtStart.length)
     })
 
+    test('creation fails if username is too short', async()=>{
+        const usersAtStart = await helper.usersInDb()
+        console.log('length of users at START', usersAtStart.length)
+
+        const newUser = {
+            username: 'to',
+            name: 'testName',
+            password:'password'
+        }
+
+        const result = await api
+        .post('/api/users/')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+        console.log('result of sending the newUser: ', result.body)
+        expect(result.body.error).toContain('username is shorter than minimum allowed length (3)')
+
+     const usersAtEnd = await helper.usersInDb()
+     console.log('length of users at END', usersAtEnd.length)
+
+         expect(usersAtEnd).toHaveLength(usersAtStart.length)
+
+    })
+
+    test('creation fails with proper status code and message if password is too shorrt', async()=>{
+        const usersAtStart = await helper.usersInDb()
+
+        console.log('length of users at STARt', usersAtStart.length)
+
+        const newUser ={
+            username: 'tester',
+            name: 'testName',
+            password:'pa'
+        }
+
+        const result = await api
+        .post('/api/users/')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+        console.log('result of sending the newUser: ', result.body)
+        expect(result.body.error).toContain('password is shorter than minimum allowed length (3)')
+
+        const usersAtEnd = await helper.usersInDb()
+        console.log('length of users at END', usersAtEnd.length)
+
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
+
+    })
+
     afterAll(() => {
         mongoose.connection.close();
       })
