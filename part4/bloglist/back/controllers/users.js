@@ -6,9 +6,10 @@ const User = require('../models/user')
 usersRouter.get('/', async(request, response)=>{
     const users = await User
     .find({})
-    .populate('blogs', {title: 1, author: 1, url: 1})
+    .populate('blogs', {url: 1, title: 1, author: 1, id: 1})
 
-    response.json(users.map(user => user.toJSON()))
+    // response.json(users.map(user => user.toJSON()))
+    response.json(users)
 })
 
 usersRouter.post('/', async(request, response)=>{
