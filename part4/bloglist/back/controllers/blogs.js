@@ -1,6 +1,22 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+
+
+//authorization 
+//helper function isolates the token from the auth header
+//the validity of the token is chekced w jwt.verify and decodes the token then returns the object which the token was based on
+//if no token passed, error returns 'jwt mus be provided'
+
+//The object decoded from the token contains the username and id fields, which tells the server who made the request. 
+const getTokenFrom = request =>{
+  const authorization = request.get('authorization')
+  if(authorization && authorization.toLowerCase().startsWith('bearer ')){
+    return authorization.substring(7)
+  }
+  return null
+}
 
 
 //refactor using async/await
@@ -48,7 +64,22 @@ blogsRouter.put('/:id', async(request, response, next)=>{
  
     const body = request.body
     console.log('contents of body', body)
-    const user = await User.findById(body.userId)
+
+    const token = getTokenFrom(request)
+    console.log('token: ', token)
+
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    console.log('decoded token: ', decodedToken)
+
+    if(!decodedToken.id){
+      return response.status(401).json({ error: 'token missing or invalid'})
+    }
+
+    const user = await User.findById(decodedToken.id)
+
+
+
+    //const user = await User.findById(body.userId)
     console.log('user:', user)
     
 
@@ -79,13 +110,12 @@ blogsRouter.put('/:id', async(request, response, next)=>{
     })
 
     const savedBlog = await blog.save()
-    response.status(201).json(savedBlog)
-    user.blogs = user.blogs.concat(blog._id)
+    //response.status(201).json(savedBlog)
+    user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
 
-  }
-  
-  )
+    response.json(savedBlog)
+  })
   
 
   module.exports = blogsRouter
