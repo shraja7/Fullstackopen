@@ -63,24 +63,25 @@ blogsRouter.put('/:id', async(request, response, next)=>{
     
  
     const body = request.body
+    const user = request.user
     console.log('contents of body', body)
 
-    const token = getTokenFrom(request)
-    console.log('token: ', token)
+    // const token = getTokenFrom(request)
+    // console.log('token: ', token)
 
-    const decodedToken = jwt.verify(token, process.env.SECRET)
-    console.log('decoded token: ', decodedToken)
+    // const decodedToken = jwt.verify(token, process.env.SECRET)
+    // console.log('decoded token: ', decodedToken)
 
-    if(!decodedToken.id){
-      return response.status(401).json({ error: 'token missing or invalid'})
-    }
+    // if(!decodedToken.id){
+    //   return response.status(401).json({ error: 'token missing or invalid'})
+    // }
 
-    const user = await User.findById(decodedToken.id)
+    // const user = await User.findById(decodedToken.id)
 
 
 
     //const user = await User.findById(body.userId)
-    console.log('user:', user)
+    //console.log('user:', user)
     
 
     if(!body.likes){
