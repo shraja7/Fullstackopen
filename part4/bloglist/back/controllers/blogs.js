@@ -20,6 +20,9 @@ const getTokenFrom = request =>{
 
 
 //refactor using async/await
+
+
+
 blogsRouter.get('/', async (request, response) => {
    
   const blogs = await Blog.find({})
@@ -29,9 +32,21 @@ blogsRouter.get('/', async (request, response) => {
   
   })
 
+
+  //4.21 refactor blog so that it can only be deleted by the user who created the blog
 blogsRouter.delete('/:id', async(request, response, next)=>{
-  await Blog.findByIdAndRemove(request.params.id)
-  response.status(204).end()
+  // await Blog.findByIdAndRemove(request.params.id)
+  // response.status(204).end()
+  const userID = request.user.id
+  const blog = await Blog.findById(request.params.id)
+  if(blog.user.toString() === userID.toString()){
+    await Blog.findByIdAndDelete(request.params.id)
+    response.status(204).end();
+  }else{
+    response.status(403)
+    .json({error: "user has no permission to delete the blog"})
+  }
+
 })
   
 //==================================================
