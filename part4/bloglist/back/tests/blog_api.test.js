@@ -6,7 +6,9 @@ const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 const { deleteOne } = require('../models/blog')
+const User = require('../models/user')
 
+// TODO Refactor tests using authorization
 
 // const initialBlogs = [
 //   {
@@ -59,39 +61,110 @@ const { deleteOne } = require('../models/blog')
 //   }  
 // ]
 
-beforeEach(async () =>{
-  await Blog.deleteMany({})
+// beforeEach(async () =>{
+//   await Blog.deleteMany({})
 
-  // let blogObject = new Blog(helper.initialBlogs[0])
-  // await blogObject.save()
+//   // let blogObject = new Blog(helper.initialBlogs[0])
+//   // await blogObject.save()
 
-  // blogObject = Blog(helper.initialBlogs[1])
-  // await blogObject.save()
+//   // blogObject = Blog(helper.initialBlogs[1])
+//   // await blogObject.save()
 
-  // blogObject = Blog(helper.initialBlogs[2])
-  // await blogObject.save()
+//   // blogObject = Blog(helper.initialBlogs[2])
+//   // await blogObject.save()
 
-  // blogObject = Blog(helper.initialBlogs[3])
-  // await blogObject.save()
+//   // blogObject = Blog(helper.initialBlogs[3])
+//   // await blogObject.save()
 
-  // blogObject = Blog(helper.initialBlogs[4])
-  // await blogObject.save()
+//   // blogObject = Blog(helper.initialBlogs[4])
+//   // await blogObject.save()
 
-  // blogObject = Blog(helper.initialBlogs[5])
-  // await blogObject.save()
+//   // blogObject = Blog(helper.initialBlogs[5])
+//   // await blogObject.save()
 
 
-  // blogObject = Blog(helper.initialBlogs[6])
-  // await blogObject.save()
-// await Blog.insertMany(helper.initialBlogs)
-for(let blog of helper.initialBlogs){
-  let blogObject = new Blog(blog)
-  await blogObject.save()
-}
+//   // blogObject = Blog(helper.initialBlogs[6])
+//   // await blogObject.save()
+// // await Blog.insertMany(helper.initialBlogs)
+// for(let blog of helper.initialBlogs){
+//   let blogObject = new Blog(blog)
+//   await blogObject.save()
+// }
   
+// })
+
+beforeEach(async()=>{
+  await Blog.deleteMany({})
+  await User.deleteMany({})
+  helper.initialBlogs.forEach(async (blog)=>{
+    const blogObject = new Blog(blog)
+    await blogObject.save();
+  })
+ helper.initialUsers.forEach(async (user)=>{
+const userObject = new User(user)
+await userObject.save()
+  })
 })
 
+//with authorization
+describe('get blog information', ()=>{
+  let headers
 
+  beforeEach(async ()=>{
+    const newUser ={
+      username: 'root',
+      name: 'root',
+      password: 'password'
+    }
+
+    await api.
+    post('/api/users')
+    .send(newUser)
+
+   const result = await api
+    .post('/api/login')
+    .send(newUser)
+
+    headers ={
+      'Authorization': `bearer ${result.body.token}`
+    }
+
+  })
+
+  test('blogs are returned as json', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .set(headers)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('there are two blogs', async () => {
+    const response = await api
+                        .get('/api/blogs')
+                        .set(headers)
+
+    expect(response.body).toHaveLength(helper.initialBlogs.length)
+  })
+
+  test('the first blog is about React patterns', async () => {
+    const response = await api
+                      .get('/api/blogs')
+                      .set(headers)
+
+    const contents = response.body.map(r => r.title)
+
+    expect(contents).toContain('React patterns')
+  })
+
+  test('The unique identifier property of the blog posts is by default _id', async () => {
+    const blogs = await Blog.find({})
+    expect(blogs[0]._id).toBeDefined()
+  })
+
+
+
+})
 
 
 

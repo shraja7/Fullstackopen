@@ -52,6 +52,15 @@ const initialBlogs = [
     }  
   ]
 
+  const initialUsers = [
+    {
+      name: "Gabiel",
+      username: "gabe",
+      password: "password",
+    },
+  ];
+
+
   const nonExistingId = async () =>{
     const blog = new Blog({
         title: "Test Blog",
@@ -77,5 +86,5 @@ const initialBlogs = [
     return users.map(u => u.toJSON())
   }
   module.exports ={
-    nonExistingId, blogsInDb, initialBlogs, usersInDb
+    nonExistingId, blogsInDb, initialBlogs, usersInDb, initialUsers
   }
