@@ -64,6 +64,11 @@ const handleUsername = (e) => {
   setPassword(e.target.value)
   console.log(e.target.value)
  }
+
+ const handleLogout = () => { 
+  setUser(null)
+window.localStorage.removeItem('loggedBlogappUser')
+  }
 // 
 console.log('blogs: ', blogs)
 
@@ -84,6 +89,7 @@ user === null ?
   {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
+  <button onClick={handleLogout}>Logout</button>
 
 </div>
   }
