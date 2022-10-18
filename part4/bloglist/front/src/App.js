@@ -58,7 +58,9 @@ useEffect(()=>{
       setPassword('')
     }
     catch (exception){
-      console.log(exception)
+      notify('wrong username or password')
+      console.log('exception: ', exception)
+      
     }
   }
 
@@ -129,16 +131,17 @@ blogService.create({
 
   return (
     <div>
-     
+     <Notification notification={notification}/>
   
   {
+
 user === null ?
 <LoginForm handleLogin={handleLogin} handleUsername={handleUsername} handlePassword={handlePassword} /> 
 :<div>
   {`${user.name} is logged in`}
   {/* <p>Users Token</p>
   {`USERS TOKEN: ${user.token} `} */}
-  <Notification notification={notification}/>
+  
   
 
   {blogs.map(blog =>
