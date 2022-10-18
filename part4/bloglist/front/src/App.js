@@ -4,6 +4,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import CreateBlogForm from './components/BlogForm'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -76,7 +77,17 @@ const handleUsername = (e) => {
 window.localStorage.removeItem('loggedBlogappUser')
   }
 // 
-console.log('blogs: ', blogs)
+// console.log('blogs: ', blogs)
+
+//setting notification
+const notify = (message, type)=>{
+  setNotification(message, type)
+  setTimeout(()=>{
+    setNotification(null)
+  }, 5000)
+}
+
+//--------------------------------------------
 
 //handle BlogForms inputs -----------------------------
 const handleTitle = (e) => { 
@@ -94,11 +105,11 @@ setAuthor(e.target.value)
 setURL(e.target.value)
  }
 
- const handleNewBlogSubmit = (e) => { 
+ const handleNewBlogSubmit = async (e) => { 
   e.preventDefault()
 console.log('handle new blog submit button')
 //send information to the backend to create a new blog
-setNotification('a new blog was added')
+notify("a new blog was added")
 blogService.create({
   title,
    author,
@@ -112,6 +123,10 @@ blogService.create({
 
 //-------------------------------------------------------
 
+
+//--------------------------------------------
+
+
   return (
     <div>
      
@@ -123,7 +138,7 @@ user === null ?
   {`${user.name} is logged in`}
   {/* <p>Users Token</p>
   {`USERS TOKEN: ${user.token} `} */}
-  {notification}
+  <Notification notification={notification}/>
   
 
   {blogs.map(blog =>
