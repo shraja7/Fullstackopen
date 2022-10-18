@@ -10,6 +10,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [notification, setNotification] = useState(null)
 //useStates for BlogForm
 const [title, setTitle] = useState('')
 const [author, setAuthor] = useState('')
@@ -97,12 +98,12 @@ setURL(e.target.value)
   e.preventDefault()
 console.log('handle new blog submit button')
 //send information to the backend to create a new blog
+setNotification('a new blog was added')
 blogService.create({
-  "title":"blog1",
-  "author": "joey",
-  "url":"test url",
-  "likes": 69,
-  "userId": "633f2e1085556bab181d303c"
+  title,
+   author,
+  url,
+ 
 }).then(blog => setBlogs(blogs.concat(blog)))
 
 
@@ -120,8 +121,9 @@ user === null ?
 <LoginForm handleLogin={handleLogin} handleUsername={handleUsername} handlePassword={handlePassword} /> 
 :<div>
   {`${user.name} is logged in`}
-  <p>Users Token</p>
-  {`USERS TOKEN: ${user.token} `}
+  {/* <p>Users Token</p>
+  {`USERS TOKEN: ${user.token} `} */}
+  {notification}
   
 
   {blogs.map(blog =>
