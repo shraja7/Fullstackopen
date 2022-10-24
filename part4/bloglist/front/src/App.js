@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import CreateBlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -16,6 +17,9 @@ const App = () => {
 const [title, setTitle] = useState('')
 const [author, setAuthor] = useState('')
 const [url, setURL] = useState('')
+//toggle visiblity of login form
+//refrence to toggle visibility for create blog form
+const blogFormRef = useRef()
 
 
     useEffect(() => {
@@ -112,6 +116,8 @@ setURL(e.target.value)
 console.log('handle new blog submit button')
 //send information to the backend to create a new blog
 notify("a new blog was added")
+//hide new blog form
+blogFormRef.current.toggleVisibility()
 blogService.create({
   title,
    author,
@@ -120,10 +126,9 @@ blogService.create({
 }).then(blog => setBlogs(blogs.concat(blog)))
 
 
-
   }
 
-//-------------------------------------------------------
+//--------------------------------------------
 
 
 //--------------------------------------------
@@ -148,11 +153,15 @@ user === null ?
         <Blog key={blog.id} blog={blog} />
       )}
   <button onClick={handleLogout}>Logout</button>
-<CreateBlogForm handleTitle={handleTitle}
+
+  <Togglable buttonLabel='Create New Blog' ref={blogFormRef}>
+  <CreateBlogForm handleTitle={handleTitle}
   handleAuthor={handleAuthor}
   handleURL={handleURL}
   handleNewBlogSubmit={handleNewBlogSubmit}
 />
+    </Togglable>
+
 </div>
   }
    
