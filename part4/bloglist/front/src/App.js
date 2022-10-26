@@ -3,7 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
-import CreateBlogForm from './components/BlogForm'
+import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
@@ -14,9 +14,9 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
 //useStates for BlogForm
-const [title, setTitle] = useState('')
-const [author, setAuthor] = useState('')
-const [url, setURL] = useState('')
+// const [title, setTitle] = useState('')
+// const [author, setAuthor] = useState('')
+// const [url, setURL] = useState('')
 //toggle visiblity of login form
 //refrence to toggle visibility for create blog form
 const blogFormRef = useRef()
@@ -96,34 +96,31 @@ const notify = (message, type)=>{
 //--------------------------------------------
 
 //handle BlogForms inputs -----------------------------
-const handleTitle = (e) => { 
-  console.log(e.target.value)
-setTitle(e.target.value)
- }
+// const handleTitle = (e) => { 
+//   console.log(e.target.value)
+// setTitle(e.target.value)
+//  }
 
- const handleAuthor = (e) => { 
-  console.log(e.target.value)
-setAuthor(e.target.value)
- }
+//  const handleAuthor = (e) => { 
+//   console.log(e.target.value)
+// setAuthor(e.target.value)
+//  }
 
- const handleURL = (e) => { 
-  console.log(e.target.value)
-setURL(e.target.value)
- }
+//  const handleURL = (e) => { 
+//   console.log(e.target.value)
+// setURL(e.target.value)
+//  }
 
- const handleNewBlogSubmit = async (e) => { 
-  e.preventDefault()
+ const handleNewBlogSubmit = (blogObject) => { 
+  // e.preventDefault()
 console.log('handle new blog submit button')
 //send information to the backend to create a new blog
 notify("a new blog was added")
 //hide new blog form
+console.log('blogObject: ', blogObject)
 blogFormRef.current.toggleVisibility()
-blogService.create({
-  title,
-   author,
-  url,
- 
-}).then(blog => setBlogs(blogs.concat(blog)))
+blogService.create(blogObject)
+.then(returnedBlog => setBlogs(blogs.concat(returnedBlog)))
 
 
   }
@@ -155,9 +152,7 @@ user === null ?
   <button onClick={handleLogout}>Logout</button>
 
   <Togglable buttonLabel='Create New Blog' ref={blogFormRef}>
-  <CreateBlogForm handleTitle={handleTitle}
-  handleAuthor={handleAuthor}
-  handleURL={handleURL}
+  <BlogForm 
   handleNewBlogSubmit={handleNewBlogSubmit}
 />
     </Togglable>
